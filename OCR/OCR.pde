@@ -38,14 +38,14 @@ void loadFiles()
      numEntriesPerChar[charValue]++;
   }
   
-  //convert color integers into 0s and 1s where 0 = white and 1 = black
+  // Convert color integers into 0s and 1s where 0 = white and 1 = black
   for(int i = 0; i < data.length; i++)
      for(int j = 0; j < data[i].length; j++)
        for(int k = 0; k < data[i][j].length; k++)
           if(data[i][j][k] == -1)
               data[i][j][k] = 0;
           else
-              data[i][j][k] = 1; //<>// //<>//
+              data[i][j][k] = 1; //<>// //<>// //<>//
 }
 
 int B_MASK = 255;
@@ -59,7 +59,7 @@ color getColorFromInt(int i) {
   int g = i & G_MASK;
   int b = i & B_MASK;
 
-  return (color(r,g,b)); //<>//
+  return (color(r,g,b)); //<>// //<>//
 }
 
 void draw()
