@@ -24,7 +24,6 @@ void loadFiles()
   for(int i = 0; i < numEntriesPerChar.length; i++)
      data[i] = new int[numEntriesPerChar[i]][];
      
-  numEntriesPerChar = new int[10];
   
   for(int i = 0; i < fileNames.length; i++)
   {
@@ -45,8 +44,8 @@ void loadFiles()
           if(data[i][j][k] == -1)
               data[i][j][k] = 0;
           else
-              data[i][j][k] = 1; //<>// //<>// //<>//
-}
+              data[i][j][k] = 1; //<>// //<>//
+} //<>//
 
 int B_MASK = 255;
 int G_MASK = 255<<8;
@@ -59,8 +58,8 @@ color getColorFromInt(int i) {
   int g = i & G_MASK;
   int b = i & B_MASK;
 
-  return (color(r,g,b)); //<>// //<>//
-}
+  return (color(r,g,b)); //<>//
+} //<>//
 
 void draw()
 {
