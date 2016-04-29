@@ -8,6 +8,7 @@ void setup()
   size(50, 50);
   loadFiles();
   program = new MachineLearning();
+  exit();
 }
 
 void loadFiles()
@@ -34,7 +35,7 @@ void loadFiles()
     if (fileNames[i].indexOf(dataType) > -1)
     {
       PImage image = loadImage(fileNames[i]);
-      image(image, 0, 0);
+      //image(image, 0, 0);
       image.loadPixels();
       //println("Char: " + charValue);
       //println("Char value: " + numEntriesPerChar[charValue]);
@@ -108,7 +109,10 @@ class MachineLearning {
     
     // Want it to be randomized, because we don't really want to
     // do any of the work for this, and it's probably best if the
-    // data is presented in a random order.
+    // data is presented in a random order. Randomization is a key
+    // part of machine learning/general algorithm creation because
+    // it allows for chance really great things to happen with a net
+    // effect of good performance.
     indexes.shuffle();
 
     total = new int [indexes.size()][indexes.size()];
@@ -179,7 +183,7 @@ class MachineLearning {
             goodPairs.append(pair);
             hits[num1]++;
           }
-          println(match + "\tNum1, Num2: " + pair + "  N1, N2: (" + n1 + ", " + n2 + ")\tOver: " + over);
+          //println(match + "\tNum1, Num2: " + pair + "  N1, N2: (" + n1 + ", " + n2 + ")\tOver: " + over);
           if (categories.containsKey(num1)) {
             categories.get(num1).add(arrays.get(indexes.get(j)));
           } else {
@@ -194,11 +198,11 @@ class MachineLearning {
         }
       }
     }
-    printArray(badPairs);
-    printArray(goodPairs);
-    println(numMissed);
-    println(pow(indexes.size(), 2) - indexes.size());
-    PrintWriter dataWriter = createWriter(day() + "." + month() + "." + year() + " " + hour() + "." + minute() + "." + second() + ".txt");
+    //printArray(badPairs);
+    //printArray(goodPairs);
+    //println(numMissed);
+    //println(pow(indexes.size(), 2) - indexes.size());
+    PrintWriter dataWriter = createWriter("samples/" + day() + "." + month() + "." + year() + " " + hour() + "." + minute() + "." + second() + ".txt");
     for (int i = 0; i < 10; i++) {
       float proportion = float(hits[i]) / (hits[i] + mistakes[i]);
       String data = i + ": %: " + nfc(proportion, 2) + "\t\tCorrect: " + hits[i] + "\tMistakes: " + mistakes[i] + "\tMissed: " + misses[i];
