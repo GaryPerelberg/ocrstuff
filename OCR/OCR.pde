@@ -11,7 +11,7 @@ void setup()
 void loadFiles()
 {
   currentDir = new File(sketchPath() + "/data");
-  println(currentDir.toString());
+  //println(currentDir.toString());
   String[] fileNames = currentDir.list();
   int[] numEntriesPerChar = new int[10];
   
@@ -21,7 +21,7 @@ void loadFiles()
      int charValue = int(fileNames[i].split(" ")[0]);
      numEntriesPerChar[charValue]++;
     }
-    
+  
   for(int i = 0; i < numEntriesPerChar.length; i++)
      data[i] = new int[numEntriesPerChar[i]][];
   
@@ -34,8 +34,8 @@ void loadFiles()
        PImage image = loadImage(fileNames[i]);
        image(image, 0, 0);
        image.loadPixels();
-       println("Char: " + charValue);
-       println("Char value: " + numEntriesPerChar[charValue]);
+       //println("Char: " + charValue);
+       //println("Char value: " + numEntriesPerChar[charValue]);
        data[charValue][numEntriesPerChar[charValue] - 1] = image.pixels;
        numEntriesPerChar[charValue]--;
      }
@@ -68,10 +68,27 @@ color getColorFromInt(int i) {
 
 void draw()
 {
-  
+  background(255);
 }
 
 class NeuralNetwork 
 {
   
+}
+
+class BayesianProgram {
+  // Bayesian program uses several different factors
+  // We can use the arrays to make a "vector" out of these
+  
+  
+  
+  int totalOverlap(int [][] one, int [][] two) {
+    int total = 0;
+    for (int i = 0; i < one.length; i++) {
+      for (int j = 0; j < one[i].length; j++) {
+        total += one[i][j] * two[i][j];
+      }
+    }
+    return(total);
+  }
 }
