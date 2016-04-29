@@ -1,0 +1,10 @@
+0: %: 0.29		Correct: 20	Mistakes: 48	Missed: 760
+1: %: 0.84		Correct: 66	Mistakes: 13	Missed: 714
+2: %: 0.52		Correct: 23	Mistakes: 21	Missed: 757
+3: %: 0.29		Correct: 24	Mistakes: 59	Missed: 756
+4: %: 0.55		Correct: 39	Mistakes: 32	Missed: 741
+5: %: 0.24		Correct: 20	Mistakes: 62	Missed: 760
+6: %: 0.36		Correct: 34	Mistakes: 61	Missed: 746
+7: %: 0.67		Correct: 39	Mistakes: 19	Missed: 741
+8: %: 0.43		Correct: 43	Mistakes: 56	Missed: 737
+9: %: 0.25		Correct: 20	Mistakes: 61	Missed: 760
