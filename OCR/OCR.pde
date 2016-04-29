@@ -82,12 +82,10 @@ class BayesianProgram {
   
   
   
-  int totalOverlap(int [][] one, int [][] two) {
+  int totalOverlap(int [] one, int [] two) {
     int total = 0;
     for (int i = 0; i < one.length; i++) {
-      for (int j = 0; j < one[i].length; j++) {
-        total += one[i][j] * two[i][j];
-      }
+        total += one[i] * two[i];
     }
     return(total);
   }
