@@ -11,3 +11,11 @@ void intArrayToScreen(int[][][] data)
     pixels[i] = data[0][0][i];
   updatePixels(); 
 }
+
+void intArrayToScreen(int [] data)
+{
+  loadPixels();
+  for(int i = 0; i < data.length; i++)
+    pixels[i] = data[i];
+  updatePixels(); 
+}
