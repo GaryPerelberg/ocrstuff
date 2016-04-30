@@ -24,11 +24,13 @@ void setup() {
   }
 
   for (int i = 0; i < names.length; i++) {
-    String [] data = loadStrings(myPath + "/" + names[i]);
-    for (int j = 0; j < data.length; j++) {
-      String [] splits = splitTokens(data[j], " \t:");
-      if (splits.length >= 3) {
-        floats[j].append(float(splits[2]));
+    if (names[i].indexOf("B") < 0 && names[i].indexOf("C") < 0 && names[i].indexOf("D") >= 0) {
+      String [] data = loadStrings(myPath + "/" + names[i]);
+      for (int j = 0; j < data.length; j++) {
+        String [] splits = splitTokens(data[j], " \t:");
+        if (splits.length >= 3) {
+          floats[j].append(float(splits[2]));
+        }
       }
     }
   }
@@ -36,6 +38,7 @@ void setup() {
     //printArray(flow);
     flow.sort();
   }
+  println("Size: " + floats[0].size());
 }
 
 void draw() {
@@ -54,7 +57,7 @@ void draw() {
       noStroke();
       ellipse(xi, y0 - yrange * floats[i].get(j), 4, 4);
     }
-    
+
     stroke(0);
     strokeWeight(1);
     // Lowest line
@@ -63,19 +66,18 @@ void draw() {
     line(xi - 4, y0 - yrange * q4(floats[i]), xi + 4, y0 - yrange * q4(floats[i]));
     // Median line
     line(xi - 4, y0 - yrange * q2(floats[i]), xi + 4, y0 - yrange * q2(floats[i]));
-    
+
     strokeWeight(.75);
     noFill();
     rectMode(CORNERS);
     rect(xi - 4, y0 - yrange * q1(floats[i]), xi + 4, y0 - yrange * q3(floats[i]));
-    
+
     //Lower vertical line
     line(xi, y0 - yrange * q0(floats[i]), xi, y0 - yrange * q1(floats[i]));
     // Higher vertical line
     line(xi, y0 - yrange * q3(floats[i]), xi, y0 - yrange * q4(floats[i]));
-    
   }
-  
+
   stroke(0);
   strokeWeight(2);
   line(x0, y0 - yrange * .5, xf, y0 - yrange * .5);
@@ -88,7 +90,7 @@ void draw() {
   for (int i = 0; i < 11; i+=2) {
     text(nfc(float(i) / 10, 2), x0 - 5, y0 - (yrange / 10) * i);
   }
-  textAlign(TOP, CENTER);
+  textAlign(CENTER, TOP);
   for (int i = 0; i < 10; i+=2) {
     text(i, x0 + xincr * (i + 1), y0 + 10);
   }
