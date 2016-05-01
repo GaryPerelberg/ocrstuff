@@ -1,63 +1,29 @@
-import java.util.Arrays;
+import java.util.Arrays; //<>// //<>// //<>//
+import funGUI.*;
 
 String dataType = ".png";
 int[][][] data = new int[10][][];
 File currentDir;
 MachineLearning program;
+Timer time = new Timer(750, this);
+
+int [] distLowX = new int [50];
+
+PImage [] dataSample = new PImage[50];
 
 void setup() 
 {
   size(50, 50);
   loadFiles();
-  for (int i = 0; i < 10; i++) {
-    program = new MachineLearning();
-    delay(300);
-  }
-  exit();
+  //extractConnectedComponents(1, 5);
+  //for (int i = 0; i < 10; i++) {
+  //  program = new MachineLearning();
+  //  delay(300);
+  //}
+  //exit();
 }
 
-void loadFiles()
-{
-  currentDir = new File(sketchPath() + "/data");
-  //println(currentDir.toString());
-  String[] fileNames = currentDir.list();
-  int[] numEntriesPerChar = new int[10];
-
-  for (int i = 0; i < fileNames.length; i++)
-    if (fileNames[i].indexOf(dataType) > -1)
-    {
-      int charValue = int(fileNames[i].split(" ")[0]);
-      numEntriesPerChar[charValue]++;
-    }
-
-  for (int i = 0; i < numEntriesPerChar.length; i++)
-    data[i] = new int[numEntriesPerChar[i]][];
-
-
-  for (int i = 0; i < fileNames.length; i++)
-  {
-    int charValue = int(fileNames[i].split(" ")[0]);
-    if (fileNames[i].indexOf(dataType) > -1)
-    {
-      PImage image = loadImage(fileNames[i]);
-      //image(image, 0, 0);
-      image.loadPixels();
-      //println("Char: " + charValue);
-      //println("Char value: " + numEntriesPerChar[charValue]);
-      data[charValue][numEntriesPerChar[charValue] - 1] = image.pixels;
-      numEntriesPerChar[charValue]--;
-    }
-  }
-
-  // Convert color integers into 0s and 1s where 0 = white and 1 = black
-  for (int i = 0; i < data.length; i++)
-    for (int j = 0; j < data[i].length; j++)
-      for (int k = 0; k < data[i][j].length; k++)
-        if (data[i][j][k] == -1)
-          data[i][j][k] = 0;
-        else
-          data[i][j][k] = 1; //<>// //<>//
-}
+ //<>//
 
 int B_MASK = 255;
 int G_MASK = 255<<8;
@@ -70,12 +36,20 @@ color getColorFromInt(int i) {
   int g = i & G_MASK;
   int b = i & B_MASK;
 
-  return (color(r, g, b)); //<>//
+  return (color(r, g, b));
 }
+int count = 0;
 
 void draw()
 {
   background(255);
+  image(dataSample[count], 0, 0);
+  if (time.done()) {
+    count++;
+    count %= dataSample.length;
+    println(count);
+    time.reset();
+  }
 }
 
 class NeuralNetwork 
@@ -136,13 +110,11 @@ class MachineLearning {
     int [] mistakes = new int [10];
     int [] hits = new int [10];
 
-    // Fill them initially (this can also be done with some kind of Java f(x)
-    // but this should do for now)
-    for (int i = 0; i < 10; i++) {
-      misses[i] = 0;
-      mistakes[i] = 0;
-      hits[i] = 0;
-    }
+    // Fill them initially
+    Arrays.fill(misses, 0);
+    Arrays.fill(mistakes, 0);
+    Arrays.fill(hits, 0);
+
     int [] counts = new int [3];
     Arrays.fill(counts, 0);
 
@@ -176,6 +148,7 @@ class MachineLearning {
         int remainder2 = n2 % data[0].length;
         int num1 = round(float(n1 - remainder1) / data[0].length);
         int num2 = round(float(n2 - remainder2) / data[0].length);
+        boolean clumpy = !clumped(mutuallyExcl[i][j]);
 
         if (withinRange(over1, over2) && over > .5 && over != -1 && under != -1) {
           counts[0]++;
@@ -191,15 +164,15 @@ class MachineLearning {
             hits[num1]++;
           }
           //println(match + "\tNum1, Num2: " + pair + "  N1, N2: (" + n1 + ", " + n2 + ")\tOver: " + over);
-          if (categories.containsKey(num1)) {
-            categories.get(num1).add(arrays.get(indexes.get(j)));
-          } else {
-            cats.appendUnique(num1);
-            categories.put(num1, new ArrayList<int[]>());
-            categories.get(num1).add(arrays.get(indexes.get(i)));
-            categories.get(num1).add(arrays.get(indexes.get(j)));
-          }
-        } else if (!clumped(mutuallyExcl[i][j]) && over != -1 && under != -1) {
+          //if (categories.containsKey(num1)) {
+          //  categories.get(num1).add(arrays.get(indexes.get(j)));
+          //} else {
+          //  cats.appendUnique(num1);
+          //  categories.put(num1, new ArrayList<int[]>());
+          //  categories.get(num1).add(arrays.get(indexes.get(i)));
+          //  categories.get(num1).add(arrays.get(indexes.get(j)));
+          //}
+        } else if (clumpy && over != -1 && under != -1) {
           counts[1]++;
           String pair = "(" + num1 + ", " + num2 + ")";
 
@@ -213,15 +186,15 @@ class MachineLearning {
             hits[num1]++;
           }
           //println(match + "\tNum1, Num2: " + pair + "  N1, N2: (" + n1 + ", " + n2 + ")\tOver: " + over);
-          if (categories.containsKey(num1)) {
-            categories.get(num1).add(arrays.get(indexes.get(j)));
-          } else {
-            cats.appendUnique(num1);
-            categories.put(num1, new ArrayList<int[]>());
-            categories.get(num1).add(arrays.get(indexes.get(i)));
-            categories.get(num1).add(arrays.get(indexes.get(j)));
-          }
-        } else if (num1 == num2 && n1 != n2) {
+          //if (categories.containsKey(num1)) {
+          //  categories.get(num1).add(arrays.get(indexes.get(j)));
+          //} else {
+          //  cats.appendUnique(num1);
+          //  categories.put(num1, new ArrayList<int[]>());
+          //  categories.get(num1).add(arrays.get(indexes.get(i)));
+          //  categories.get(num1).add(arrays.get(indexes.get(j)));
+          //}
+        } else if (num1 == num2 && n1 != n2 && over != -1 && under != -1) {
           counts[2]++;
           numMissed++;
           misses[num1]++;
@@ -235,7 +208,7 @@ class MachineLearning {
     printArray(counts);
 
     // Record all of the results in a small summary that is easily read and parsed
-    PrintWriter dataWriter = createWriter("samples/D " + day() + "." + month() + "." + year() + " " + hour() + "." + minute() + "." + second() + ".txt");
+    PrintWriter dataWriter = createWriter("samples/I " + day() + "." + month() + "." + year() + " " + hour() + "." + minute() + "." + second() + ".txt");
     for (int i = 0; i < 10; i++) {
       float proportion = float(hits[i]) / (hits[i] + mistakes[i]);
       String data = i + ": %: " + nfc(proportion, 2) + "\t\tCorrect: " + hits[i] + "\tMistakes: " + mistakes[i] + "\tMissed: " + misses[i];
@@ -247,13 +220,16 @@ class MachineLearning {
   }
 
   void formatData() {
+    int running = 0;
     for (int i = 0; i < data.length; i++) {
       for (int j = 0; j < data[i].length; j++) {
         arrays.add(new int [50 * 50]);
+
         indexes.append(i * data[i].length + j);
-        for (int k = 0; k < data[i][j].length; k++) {
-          arrays.get(i * data[i].length + j)[k] = data[i][j][k];
+        for (int k = 0; k < data[i][j].length; k++) {  
+          arrays.get(running)[k] = data[i][j][k];
         }
+        running++;
       }
     }
   }
@@ -361,6 +337,7 @@ class MachineLearning {
     }
 
     FloatList dists = new FloatList();
+    //int iterations = int(random(1, 6));
     for (int j = 0; j < 5; j++) {
       int refIndex = int(random(0, xs.size()));
       for (int i = 0; i < xs.size(); i++) {
@@ -370,14 +347,13 @@ class MachineLearning {
         }
       }
     }
-
-    //for (int i = 0; i < 3; i++) {
-    //  int maxIndex = dists.maxIndex();
-    //  dists.remove(maxIndex);
-    //}
+    if (dists.size() != 0) {
+      int maxIndex = dists.maxIndex();
+      dists.remove(maxIndex);
+    }
     float avg = dists.sum() / dists.size();
     avg /= 5;
-    return(avg < 5);
+    return(avg < 5 && avg != 0);
   }
 
   int [] mutuallyExclusive(int [] one, int [] two) {

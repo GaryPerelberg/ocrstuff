@@ -24,7 +24,7 @@ void setup() {
   }
 
   for (int i = 0; i < names.length; i++) {
-    if (names[i].indexOf("B") < 0 && names[i].indexOf("C") < 0 && names[i].indexOf("D") >= 0) {
+    if (names[i].indexOf("I") >= 0) {
       String [] data = loadStrings(myPath + "/" + names[i]);
       for (int j = 0; j < data.length; j++) {
         String [] splits = splitTokens(data[j], " \t:");

@@ -12,7 +12,7 @@ void setup()
    StringList fontNames = new StringList(PFont.list());
    fontNames.shuffle();
    
-   for(int i = 0; i < 60; i++)
+   for(int i = 0; i < 45; i++)
    {
      for (int j = 0; j < 10; j++) 
      {
