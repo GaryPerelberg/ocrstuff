@@ -34,7 +34,6 @@ void loadFiles()
   }
 
   cleanUp();
-  time.reset();
 }
 
 void cleanUp() {

@@ -1,4 +1,19 @@
 /***************** Things That Actually Work *********************/
+int B_MASK = 255;
+int G_MASK = 255<<8;
+int R_MASK = 255<<16;
+
+color getColorFromInt(int i) {
+
+  // then : 
+  int r = i & R_MASK;
+  int g = i & G_MASK;
+  int b = i & B_MASK;
+
+  return (color(r, g, b));
+}
+
+
 void intArrayToScreen(int[][][] data)
 {       
   for (int i = 0; i < data[0][0].length; i++)
