@@ -1,0 +1,10 @@
+0: %: 0.33		Correct: 41	Mistakes: 83	Missed: 949	Ignored: 8070
+1: %: 0.72		Correct: 54	Mistakes: 21	Missed: 936	Ignored: 9699
+2: %: 0.40		Correct: 37	Mistakes: 56	Missed: 953	Ignored: 8873
+3: %: 0.34		Correct: 46	Mistakes: 90	Missed: 944	Ignored: 9809
+4: %: 0.55		Correct: 54	Mistakes: 44	Missed: 936	Ignored: 8560
+5: %: 0.47		Correct: 50	Mistakes: 56	Missed: 940	Ignored: 7547
+6: %: 0.29		Correct: 43	Mistakes: 103	Missed: 947	Ignored: 8068
+7: %: 0.73		Correct: 61	Mistakes: 23	Missed: 929	Ignored: 10940
+8: %: 0.23		Correct: 45	Mistakes: 151	Missed: 945	Ignored: 10018
+9: %: 0.28		Correct: 32	Mistakes: 82	Missed: 958	Ignored: 8832

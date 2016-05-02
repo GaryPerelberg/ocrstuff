@@ -37,10 +37,7 @@ class MachineLearning {
 
     // Want it to be randomized, because we don't really want to
     // do any of the work for this, and it's probably best if the
-    // data is presented in a random order. Randomization is a key
-    // part of machine learning/general algorithm creation because
-    // it allows for chance really great things to happen with a net
-    // effect of good performance.
+    // data is presented in a random order.
     indexes.shuffle();
 
     generateStats();
@@ -54,15 +51,19 @@ class MachineLearning {
     // To keep track of missed pairs, mistaken pairs, and true pairs
     int [] misses = new int [10];
     int [] mistakes = new int [10];
+    int [][] mistakesBreakdown = new int [10][2];
+    int [][] hitsBreakdown = new int [10][2];
     int [] hits = new int [10];
+    int [] ignored = new int [10];
 
     // Fill them initially
     Arrays.fill(misses, 0);
     Arrays.fill(mistakes, 0);
     Arrays.fill(hits, 0);
 
+    //printArray(data[3][4]);
+
     int [] counts = new int [3];
-    Arrays.fill(counts, 0);
 
     // Now determine whether there are viable pairs by iterating
     // through all of it
@@ -90,12 +91,13 @@ class MachineLearning {
         int n1 = indexes.get(i);
         int n2 = indexes.get(j);
 
-        int remainder1 = n1 % data[0].length;
-        int remainder2 = n2 % data[0].length;
-        int num1 = round(float(n1 - remainder1) / data[0].length);
-        int num2 = round(float(n2 - remainder2) / data[0].length);
+        int remainder1 = n1 % 45;
+        int remainder2 = n2 % 45;
+        int num1 = round(float(n1 - remainder1) / 45);
+        int num2 = round(float(n2 - remainder2) / 45);
         boolean clumpy = !clumped(mutuallyExcl[i][j]);
 
+        
         if (withinRange(over1, over2) && over > .5 && over != -1 && under != -1) {
           counts[0]++;
           String pair = "(" + num1 + ", " + num2 + ")";
@@ -105,31 +107,11 @@ class MachineLearning {
           if (!match) {
             badPairs.append(pair);
             mistakes[num1]++;
+            mistakesBreakdown[num1][0]++;
           } else {
             goodPairs.append(pair);
             hits[num1]++;
-          }
-          //println(match + "\tNum1, Num2: " + pair + "  N1, N2: (" + n1 + ", " + n2 + ")\tOver: " + over);
-          //if (categories.containsKey(num1)) {
-          //  categories.get(num1).add(arrays.get(indexes.get(j)));
-          //} else {
-          //  cats.appendUnique(num1);
-          //  categories.put(num1, new ArrayList<int[]>());
-          //  categories.get(num1).add(arrays.get(indexes.get(i)));
-          //  categories.get(num1).add(arrays.get(indexes.get(j)));
-          //}
-        } else if (clumpy && over != -1 && under != -1) {
-          counts[1]++;
-          String pair = "(" + num1 + ", " + num2 + ")";
-
-          boolean match = num1 == num2;
-
-          if (!match) {
-            badPairs.append(pair);
-            mistakes[num1]++;
-          } else {
-            goodPairs.append(pair);
-            hits[num1]++;
+            hitsBreakdown[num1][0]++;
           }
           //println(match + "\tNum1, Num2: " + pair + "  N1, N2: (" + n1 + ", " + n2 + ")\tOver: " + over);
           //if (categories.containsKey(num1)) {
@@ -144,6 +126,8 @@ class MachineLearning {
           counts[2]++;
           numMissed++;
           misses[num1]++;
+        } else {
+          ignored[num1]++;
         }
       }
     }
@@ -151,13 +135,22 @@ class MachineLearning {
     //printArray(goodPairs);
     //println(numMissed);
     //println(pow(indexes.size(), 2) - indexes.size());
-    printArray(counts);
+    //printArray(counts);
 
     // Record all of the results in a small summary that is easily read and parsed
-    PrintWriter dataWriter = createWriter("samples/I " + day() + "." + month() + "." + year() + " " + hour() + "." + minute() + "." + second() + ".txt");
+    String definingString = "K";
+    String date = day() + "." + month() + "." + year();
+    String time = hour() + "." + minute() + "." + second();
+    PrintWriter dataWriter = createWriter("samples/" + definingString + " " + date + " " + time + ".txt");
     for (int i = 0; i < 10; i++) {
+      //println("Total: " + (hits[i] + mistakes[i]));
+      //println("Missed: " + (misses[i]));
       float proportion = float(hits[i]) / (hits[i] + mistakes[i]);
-      String data = i + ": %: " + nfc(proportion, 2) + "\t\tCorrect: " + hits[i] + "\tMistakes: " + mistakes[i] + "\tMissed: " + misses[i];
+      //println("Proportion: " + proportion);
+      
+      String breakdown = "Clumping - Hits: " + hitsBreakdown[i][1] + " Mistakes: " + mistakesBreakdown[i][1] + "\tOverlay - Hits: " + hitsBreakdown[i][0] + " Mistakes: " + mistakesBreakdown[i][0];
+      
+      String data = i + ": %: " + nfc(proportion, 2) + "\t\tCorrect: " + hits[i] + "\tMistakes: " + mistakes[i] + "\tMissed: " + misses[i] + "\tIgnored: " + ignored[i] + "\t" + breakdown;
       println(data);
       dataWriter.println(data);
     }
@@ -169,10 +162,10 @@ class MachineLearning {
     int running = 0;
     for (int i = 0; i < data.length; i++) {
       for (int j = 0; j < data[i].length; j++) {
-        arrays.add(new int [50 * 50]);
+        arrays.add(new int [23 * 37 + 1]);
 
-        indexes.append(i * data[i].length + j);
-        for (int k = 0; k < data[i][j].length; k++) {  
+        indexes.append(45 * i + j);
+        for (int k = 0; k < data[i][j].length; k++) { 
           arrays.get(running)[k] = data[i][j][k];
         }
         running++;
@@ -185,7 +178,7 @@ class MachineLearning {
     total1 = new int [indexes.size()];
     negTotal = new int [indexes.size()][indexes.size()];
     overlapTotal = new int [indexes.size()][indexes.size()];
-    mutuallyExcl = new int [indexes.size()][indexes.size()][2500];
+    mutuallyExcl = new int [indexes.size()][indexes.size()][23 * 37];
 
     // Now calculate all of the stats that will occupy the arrays we just
     // initialized.
@@ -271,9 +264,9 @@ class MachineLearning {
     int total = total(mutExcl);
     IntList xs = new IntList();
     IntList ys = new IntList();
-    for (int i = 0; i < 50; i++) {
-      for (int j = 0; j < 50; j++) {
-        if (mutExcl[i * 50 + j] == 1) {
+    for (int i = 0; i < 23; i++) {
+      for (int j = 0; j < 37; j++) {
+        if (mutExcl[i * 23 + j] == 1) {
           xs.append(i);
           ys.append(j);
           total--;
