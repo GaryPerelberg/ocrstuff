@@ -27,12 +27,12 @@ void setup()
 
 void draw()
 {
-  background(255);
+ //background(255);
   image(dataSample[count], 0, 0);
   if (time.done()) {
    count++;
    count %= dataSample.length;
-   println(count);
+   //println(count);
    time.reset();
   }
 }

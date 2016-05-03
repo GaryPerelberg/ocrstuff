@@ -40,6 +40,7 @@ void loadFiles()
   convertingIntArraytoImages();
 }
 
+// Makes the image binary and gets rid of unwanted pixels
 void cleanUp() {
   // Convert color integers into 0s and 1s where 0 = white and 1 = black
   for (int i = 0; i < data.length; i++)
@@ -63,15 +64,24 @@ void cleanUp() {
   }
 }
 
+// Finds the distribution of pixels throughout all of the images so that we can
+// get rid of the pixels we don't need/want.
 void correctImageDistribution() {
   int [] hDistribution = new int [50];
   int [] vDistribution = new int [50];
+  
+  // store the x start, the x end, the y start, and the y end in here
+  int [][][] starts = new int [data.length][data[0].length][4];
 
   for (int i = 0; i < data.length; i++) {
     for (int j = 0; j < data[i].length; j++) {
       for (int n = 0; n < 50; n++) {
         if (rowFilled(i, j, n)) vDistribution[n]++;
         if (colFilled(i, j, n)) hDistribution[n]++;
+        
+        if (!rowFilled(i, j, n - 1) && rowFilled(i, j, n)) starts[i][j][0] = n;
+        else 
+        if (!colFilled(i, j, n-1) && colFilled(i, j, n)) starts[i][j][2] = n;
       }
     }
   }
@@ -133,6 +143,8 @@ int newIndex(int j, int i) {
   return(constrain(j * 23 + i, 0, (23 * 37) - 1));
 }
 
+// Returns whether a given row has any of its cells filled,
+// i.e. contains a number other than 0
 boolean rowFilled(int x, int y, int row) {
   int [] points = data[x][y];
   int count = 0;
@@ -143,6 +155,8 @@ boolean rowFilled(int x, int y, int row) {
   return(count > 0);
 }
 
+// Returns whether a given column has any of its cells filled,
+// i.e. contains a number other than 0
 boolean colFilled(int x, int y, int col) {
   int [] points = data[x][y];
   int count = 0;
