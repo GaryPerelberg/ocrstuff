@@ -1,0 +1,10 @@
+0: %: 0.46		Correct: 28	Mistakes: 33	Missed: 602	Ignored: 4650	Clumping - Hits: 0 Mistakes: 0	Overlay - Hits: 28 Mistakes: 33
+1: %: 0.79		Correct: 45	Mistakes: 12	Missed: 585	Ignored: 5362	Clumping - Hits: 0 Mistakes: 0	Overlay - Hits: 45 Mistakes: 12
+2: %: 0.52		Correct: 15	Mistakes: 14	Missed: 420	Ignored: 4645	Clumping - Hits: 0 Mistakes: 0	Overlay - Hits: 15 Mistakes: 14
+3: %: 0.27		Correct: 17	Mistakes: 45	Missed: 649	Ignored: 6092	Clumping - Hits: 0 Mistakes: 0	Overlay - Hits: 17 Mistakes: 45
+4: %: 0.62		Correct: 36	Mistakes: 22	Missed: 594	Ignored: 5373	Clumping - Hits: 0 Mistakes: 0	Overlay - Hits: 36 Mistakes: 22
+5: %: 0.33		Correct: 28	Mistakes: 57	Missed: 567	Ignored: 5873	Clumping - Hits: 0 Mistakes: 0	Overlay - Hits: 28 Mistakes: 57
+6: %: 0.22		Correct: 19	Mistakes: 67	Missed: 477	Ignored: 5485	Clumping - Hits: 0 Mistakes: 0	Overlay - Hits: 19 Mistakes: 67
+7: %: 0.70		Correct: 26	Mistakes: 11	Missed: 535	Ignored: 5294	Clumping - Hits: 0 Mistakes: 0	Overlay - Hits: 26 Mistakes: 11
+8: %: 0.27		Correct: 32	Mistakes: 87	Missed: 563	Ignored: 5964	Clumping - Hits: 0 Mistakes: 0	Overlay - Hits: 32 Mistakes: 87
+9: %: 0.41		Correct: 15	Mistakes: 22	Missed: 481	Ignored: 3811	Clumping - Hits: 0 Mistakes: 0	Overlay - Hits: 15 Mistakes: 22

@@ -3,6 +3,7 @@
 String myPath = "";
 String dataLocation = "/OCR/samples";
 FloatList [] floats = new FloatList [10];
+FloatList [] outliers = new FloatList[10];
 
 void setup() {
   size(500, 500);
@@ -21,10 +22,11 @@ void setup() {
 
   for (int i = 0; i < 10; i++) {
     floats[i] = new FloatList();
+    outliers[i] = new FloatList();
   }
 
   for (int i = 0; i < names.length; i++) {
-    if (names[i].indexOf("I") >= 0) {
+    if (names[i].indexOf("L") >= 0) {
       String [] data = loadStrings(myPath + "/" + names[i]);
       for (int j = 0; j < data.length; j++) {
         String [] splits = splitTokens(data[j], " \t:");
@@ -38,6 +40,26 @@ void setup() {
     //printArray(flow);
     flow.sort();
   }
+  
+  float [] q3 = new float [10];
+  float [] q1 = new float [10];
+  float [] iqr = new float [10];
+  
+  for (int i = 0; i < floats.length; i++) {
+    q3[i] = q3(floats[i]);
+    q1[i] = q1(floats[i]);
+    iqr[i] = q3[i] - q1[i];
+  }
+  
+  for (int i = 0; i < floats.length; i++) {
+    outliers[i] = new FloatList();
+    for (int j = 0; j < floats[i].size(); j++) {
+      if (-1.5 * iqr[i] + q1[i] > floats[i].get(j) || 1.5 * iqr[i] + q3[i] < floats[i].get(j)) {
+        outliers[i].append(floats[i].get(j));
+      }
+    }
+  }
+  
   println("Size: " + floats[0].size());
 }
 
@@ -50,6 +72,16 @@ void draw() {
   float yrange = y0 - yf;
   float xrange = xf - x0;
   float xincr = xrange / 10;
+  stroke(0);
+  strokeWeight(.5);
+  if (mouseY < y0 && mouseY > yf && mouseX > x0 && mouseX < x0 + xrange) {
+    line(x0, mouseY, x0 + xrange, mouseY);
+  }
+
+  stroke(125);
+  strokeWeight(2);
+  line(x0, y0 - yrange * .5, xf, y0 - yrange * .5);
+
   for (int i = 0; i < floats.length; i++) {
     float xi = x0 + xincr * (i + 1);
     for (int j = 0; j < floats[i].size(); j++) {
@@ -78,9 +110,6 @@ void draw() {
     line(xi, y0 - yrange * q3(floats[i]), xi, y0 - yrange * q4(floats[i]));
   }
 
-  stroke(0);
-  strokeWeight(2);
-  line(x0, y0 - yrange * .5, xf, y0 - yrange * .5);
   strokeWeight(4);
   line(x0, y0, x0, yf);
   line(x0, y0, xf, y0);

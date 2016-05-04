@@ -121,6 +121,9 @@ void correctImageDistribution() {
   println(miny);
   println(vcount);
   println(hcount);
+  
+  arrayHeight = vcount;
+  arrayWidth = hcount;
 
   for (int x = 0; x < data.length; x++) {
     for (int y = 0; y < data[x].length; y++) {
@@ -140,7 +143,7 @@ int index(int j, int i) {
 }
 
 int newIndex(int j, int i) {
-  return(constrain(j * 23 + i, 0, (23 * 37) - 1));
+  return(constrain(j * arrayWidth + i, 0, (arrayWidth * arrayHeight) - 1));
 }
 
 // Returns whether a given row has any of its cells filled,

@@ -2,8 +2,8 @@
 
 // Gets rid of everything that we don't want, plus some stuff that we do want (see dilate())
 void erode(int [] letter) {
-  int w = 50;
-  int h = 50;
+  int w = arrayWidth;
+  int h = arrayHeight;
   int [] newLetter = new int [letter.length];
   for (int i = 1; i < w - 1; i++) {
     for (int j = 1; j < h - 1; j++) {
@@ -20,8 +20,8 @@ void erode(int [] letter) {
 // This keeps the stuff that we don't want gone but also brings back some details that
 // we do want.
 void dilate(int [] letter) {
-  int w = 50;
-  int h = 50;
+  int w = arrayWidth;
+  int h = arrayHeight;
   int [] newLetter = new int [letter.length];
   for (int i = 1; i < w - 1; i++) {
     for (int j = 1; j < h - 1; j++) {

@@ -1,5 +1,45 @@
 class NeuralNetwork 
 {
+  // Based on a simple implementation of a neural network by Michael Nielsen,
+  // found here: https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/src/network.py
+  int num_layers;
+  int [] sizes;
+  float [] biases;
+  float [] weights;
+  
+  NeuralNetwork(int [] sizes) {
+    this.sizes = sizes;
+    this.num_layers = sizes.length;
+    
+  }
+  
+  void feedForward() {
+  }
+  
+  void sgd() {
+  }
+  
+  void updateMiniBatch() {
+  }
+  
+  void backProp() {
+  }
+  
+  void evaluate() {
+  }
+  
+  void costDerivative() {
+  }
+}
+
+float sigmoid(float z) {
+  // The sigmoid function
+  return(1.0 / (1.0 + exp(-z)));
+}
+
+float sigmoid_prime(float z) {
+  // The derivative of the sigmoid function
+  return(sigmoid(z) * (1 - sigmoid(z)));
 }
 
 // Class for implementing some kind of machine learning
@@ -20,8 +60,10 @@ class MachineLearning {
   ArrayList<int []> arrays = new ArrayList<int[]>();
   // An intlist of indexes so that we can randomize the accessation
   // of the arrays, because ArrayLists don't include a shuffle function
-  // but IntLists do.
+  // but IntLists do. Also need to split up training vs test data.
+  // Indexes should hold the training data.
   IntList indexes = new IntList();
+  IntList testIndexes = new IntList();
 
   // Arrays for holding various information. Might be replaced
   // by some kind of vector object 2D array
@@ -30,18 +72,26 @@ class MachineLearning {
   int [][] negTotal;
   int [][] overlapTotal;
   int [][][] mutuallyExcl;
+  int [][] totalConfusion;
 
-  MachineLearning() {
-    // Put the data into a format that is useful for us
+  float proportionTrainingData = .5;
+
+  MachineLearning(float proportionOfTrainingData) {
+    proportionTrainingData = proportionOfTrainingData;
+    totalConfusion = new int [10][10];
     formatData();
+  }
 
+  void run() {
+    // Put the data into a format that is useful for us
     // Want it to be randomized, because we don't really want to
     // do any of the work for this, and it's probably best if the
     // data is presented in a random order.
     indexes.shuffle();
 
     generateStats();
-
+    
+    int [][] confusionMatrix = new int [10][10];
     // StringList that contains all of the mis-paired pairs
     StringList badPairs = new StringList();
     // StringList containing all of the correctly-paired pairs
@@ -96,12 +146,12 @@ class MachineLearning {
         int num1 = round(float(n1 - remainder1) / 45);
         int num2 = round(float(n2 - remainder2) / 45);
         boolean clumpy = !clumped(mutuallyExcl[i][j]);
-
         
+
         if (withinRange(over1, over2) && over > .5 && over != -1 && under != -1) {
           counts[0]++;
           String pair = "(" + num1 + ", " + num2 + ")";
-
+          confusionMatrix[num1][num2]++;
           boolean match = num1 == num2;
 
           if (!match) {
@@ -138,7 +188,7 @@ class MachineLearning {
     //printArray(counts);
 
     // Record all of the results in a small summary that is easily read and parsed
-    String definingString = "K";
+    String definingString = "L";
     String date = day() + "." + month() + "." + year();
     String time = hour() + "." + minute() + "." + second();
     PrintWriter dataWriter = createWriter("samples/" + definingString + " " + date + " " + time + ".txt");
@@ -147,28 +197,61 @@ class MachineLearning {
       //println("Missed: " + (misses[i]));
       float proportion = float(hits[i]) / (hits[i] + mistakes[i]);
       //println("Proportion: " + proportion);
-      
+
       String breakdown = "Clumping - Hits: " + hitsBreakdown[i][1] + " Mistakes: " + mistakesBreakdown[i][1] + "\tOverlay - Hits: " + hitsBreakdown[i][0] + " Mistakes: " + mistakesBreakdown[i][0];
-      
+
       String data = i + ": %: " + nfc(proportion, 2) + "\t\tCorrect: " + hits[i] + "\tMistakes: " + mistakes[i] + "\tMissed: " + misses[i] + "\tIgnored: " + ignored[i] + "\t" + breakdown;
       println(data);
       dataWriter.println(data);
     }
+    //println("");
+    for (int i = 0; i < confusionMatrix.length; i++) {
+     //println("");
+     for (int j = 0; j < confusionMatrix[i].length; j++) {
+       //print(confusionMatrix[i][j] + "\t");
+       totalConfusion[i][j] += confusionMatrix[i][j];
+     }
+    }
+    
     dataWriter.flush();
     dataWriter.close();
   }
 
   void formatData() {
+    indexes.clear();
+    arrays.clear();
     int running = 0;
     for (int i = 0; i < data.length; i++) {
       for (int j = 0; j < data[i].length; j++) {
         arrays.add(new int [23 * 37 + 1]);
 
-        indexes.append(45 * i + j);
+        float probability = random(0, 1);
+        if (probability < proportionTrainingData) {
+          indexes.append(45 * i + j);
+        } else {
+          testIndexes.append(45 * i + j);
+        }
         for (int k = 0; k < data[i][j].length; k++) { 
           arrays.get(running)[k] = data[i][j][k];
         }
         running++;
+      }
+    }
+  }
+  
+  void reportConfusion() {
+    println("");
+    println("");
+    print("\t");
+    for (int i = 0; i < 10; i++) {
+      print(i + "\t");
+    }
+    
+    for (int i = 0; i < totalConfusion.length; i++) {
+      println("");
+      print(i + "\t");
+      for (int j = 0; j < totalConfusion.length; j++) {
+        print(totalConfusion[i][j] + "\t");
       }
     }
   }
@@ -264,9 +347,9 @@ class MachineLearning {
     int total = total(mutExcl);
     IntList xs = new IntList();
     IntList ys = new IntList();
-    for (int i = 0; i < 23; i++) {
-      for (int j = 0; j < 37; j++) {
-        if (mutExcl[i * 23 + j] == 1) {
+    for (int i = 0; i < arrayWidth; i++) {
+      for (int j = 0; j < arrayHeight; j++) {
+        if (mutExcl[i * arrayWidth + j] == 1) {
           xs.append(i);
           ys.append(j);
           total--;
