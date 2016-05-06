@@ -1,5 +1,6 @@
 import java.util.Arrays; //<>// //<>// //<>// //<>//
 import funGUI.*;
+import java.util.Random;
 
 int arrayWidth = 50;
 int arrayHeight = 50;

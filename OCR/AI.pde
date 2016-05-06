@@ -1,20 +1,52 @@
+
+
 class NeuralNetwork 
 {
   // Based on a simple implementation of a neural network by Michael Nielsen,
   // found here: https://github.com/mnielsen/neural-networks-and-deep-learning/blob/master/src/network.py
   int num_layers;
   int [] sizes;
-  float [] biases;
-  float [] weights;
+  float [][] biases;
+  float [][][] weights;
+  
+  Random random = new Random();
   
   NeuralNetwork(int [] sizes) {
     this.sizes = sizes;
     this.num_layers = sizes.length;
+    this.biases = new float [num_layers-1][];
     
+    for (int i = 0; i < biases.length; i++) {
+      biases[i] = new float[sizes[i + 1]];
+      for (int j = 0; j < biases[i].length; j++) {
+        biases[i][j] = (float) random.nextGaussian();
+      }
+    }
+    
+    this.weights = new float [num_layers-1][][];
+    for (int i = 0; i < weights.length; i++) {
+      weights[i] = new float [sizes[num_layers - 2 - i]][];
+      for (int j = 0; j < weights[i].length; j++) {
+        weights[i][j] = new float [sizes[i + 1]];
+        for (int k = 0; k < weights[i][j].length; k++) {
+          weights[i][j][k] = (float) random.nextGaussian();
+        }
+      }
+    }
   }
   
-  void feedForward() {
+  void feedForward(float [][] a) {
+    // Returns the output of the network if a is input
+    
+    for (int i = 0; i < biases.length; i++) {
+      float biasNum = biases[i][0];
+      for (int j = 0; j < weights[i].length; j++) {
+        a[i][j] = sigmoid(biasNum);
+      }
+    }
   }
+  
+  
   
   void sgd() {
   }
@@ -41,6 +73,12 @@ float sigmoid_prime(float z) {
   // The derivative of the sigmoid function
   return(sigmoid(z) * (1 - sigmoid(z)));
 }
+
+
+
+
+
+
 
 // Class for implementing some kind of machine learning
 class MachineLearning {
